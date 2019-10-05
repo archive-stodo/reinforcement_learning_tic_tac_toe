@@ -68,10 +68,15 @@ class BanditCluster:
         for i in range(len(self.actual_results_over_runs)):
             cumulative_average = np.cumsum(self.actual_results_over_runs[i]) / (np.arange(N) + 1)
             plt.plot(cumulative_average, label='epsilon: ' + str(self.epsilons_over_runs[i]))
+
+        plt.plot(self.bandits[0].m * np.ones(N), label="bandit 1 mean return")
+        plt.plot(self.bandits[1].m * np.ones(N), label="bandit 2 mean return")
+        plt.plot(self.bandits[2].m * np.ones(N), label="bandit 3 mean return")
+
         plt.legend()
         plt.show()
 
-N = 3000
+N = 5000
 epsilons = [0.1, 0.05, 0.025, 0.01, 0.005]
 
 bandit_cluster = BanditCluster([Bandit(1.0), Bandit(2.0), Bandit(3.0)])
