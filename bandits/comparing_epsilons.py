@@ -7,7 +7,7 @@ class Bandit:
         self.m = m
         self.mean = 0
         self.mean_history = []
-        self.N = 0
+        self.N = 0.01 # for ucb1
 
     def set_optimistic_mean(self, optimistic_mean=10):
         self.mean = optimistic_mean
@@ -23,7 +23,7 @@ class Bandit:
     def reset_stats(self):
         self.mean = 0
         self.mean_history = []
-        self.N = 0
+        self.N = 0.01
 
 class BanditCluster:
 
@@ -32,6 +32,7 @@ class BanditCluster:
         self.actual_results = []
         self.actual_results_over_runs = []
         self.epsilons_over_runs = []
+        self.N = .0
 
     def reset_bandits_stats(self):
         [bandit.reset_stats() for bandit in self.bandits]
@@ -39,14 +40,14 @@ class BanditCluster:
     def set_optimistic_initial_values(self, optimistic_mean=10):
         [bandit.set_optimistic_mean(optimistic_mean) for bandit in self.bandits]
 
-    def run(self, N, eps):
+    def run(self, N, eps, use_ucb1=False):
         # self.reset_bandits_stats()
         for i in range(N):
             p = np.random.random()
             if p < eps:
                 j = np.random.choice(3)
             else:
-                j = np.argmax([b.mean for b in self.bandits])
+                j = self.choose_best_strategy(ucb1=use_ucb1)
 
             x = self.bandits[j].pull()
             self.bandits[j].update(x)
@@ -59,6 +60,12 @@ class BanditCluster:
         self.actual_results_over_runs.append(self.actual_results)
         self.actual_results = []
         self.epsilons_over_runs.append(eps)
+
+    def choose_best_strategy(self, ucb1=False):
+        if ucb1 and self.N != 0:
+            return np.argmax([b.mean + np.sqrt(2*np.log(self.N)/b.N) for b in self.bandits])
+        else:
+            return np.argmax([b.mean for b in self.bandits])
 
     def plot_last_run(self):
         cumulative_average = np.cumsum(self.actual_results_over_runs[-1]) / (np.arange(N) + 1)
@@ -83,15 +90,16 @@ class BanditCluster:
         plt.legend()
         plt.show()
 
-N = 600
+N = 2000
 epsilons = [0.01]
 
 # optimistic initial values for same epsilon value -----------------
 bandit_cluster = BanditCluster([Bandit(1.0), Bandit(2.0), Bandit(3.0)])
+bandit_cluster.set_optimistic_initial_values(10)
 [bandit_cluster.run(N, epsilons[i]) for i in range(len(epsilons))]
 bandit_cluster.reset_bandits_stats()
 
-bandit_cluster.set_optimistic_initial_values(10)
-[bandit_cluster.run(N, epsilons[i]) for i in range(len(epsilons))]
-bandit_cluster.plot_actual_results_over_runs('Optimistic initial value = 10 for same epsilon value')
+
+[bandit_cluster.run(N, epsilons[i], use_ucb1=True) for i in range(len(epsilons))]
+bandit_cluster.plot_actual_results_over_runs()
 # optimistic initial values for same epsilon value -----------------
