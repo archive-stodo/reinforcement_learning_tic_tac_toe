@@ -36,14 +36,30 @@ class Environment:
     def initialV_o(env, state_winner_triples):
         pass
 
-    def is_game_won(self):
-        pass
+    def check_game_ended(self, force_recalculate=False):
+        if not force_recalculate:
+            return self.ended
+
         #check rows
+        if_row_win = self._game_ended_row_check()
 
         #check columns
 
         #check diagonals
 
+    def _game_ended_row_check(self):
+        for player_number in (1, 2):
+            for row in range(self.rows):
+                in_a_row_count = 0
+                for column in range(self.columns):
+                    if self.board[row, column] == player_number:
+                        in_a_row_count += 1
+
+                    if in_a_row_count == 3:
+                        self.winner = player_number
+                        self.ended = True
+
+        return self.ended
 
 
     def is_draw(self):

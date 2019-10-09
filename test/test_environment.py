@@ -43,3 +43,46 @@ class TestEnvironment(unittest.TestCase):
         state_number = env.get_state_number()
 
         self.assertEqual(3 ** 16 - 1, state_number)
+
+    def test__game_ended_row_check_when_game_not_ended(self):
+        env = Environment(3, 3)
+        env.set_o(0, 0)
+        env.set_o(0, 1)
+        env.set_x(0, 2)
+
+        if_game_ended = env._game_ended_row_check()
+
+        env.print_array()
+        self.assertEqual(False, if_game_ended)
+
+    def test__game_ended_row_check_when_game_not_ended_board_empty(self):
+        env = Environment(3, 3)
+
+        if_game_ended = env._game_ended_row_check()
+
+        env.print_array()
+        self.assertEqual(False, if_game_ended)
+
+    def test__game_ended_row_check_when_game_ended(self):
+        env = Environment(3, 3)
+
+        env.set_x(1, 0)
+        env.set_x(1, 1)
+        env.set_x(1, 2)
+
+        if_game_ended = env._game_ended_row_check()
+
+        env.print_array()
+        self.assertEqual(True, if_game_ended)
+
+    def test__game_ended_row_check_when_game_ended_on4x4_board(self):
+        env = Environment(4, 4)
+
+        env.set_o(2, 1)
+        env.set_o(2, 2)
+        env.set_o(2, 3)
+
+        if_game_ended = env._game_ended_row_check()
+
+        env.print_array()
+        self.assertEqual(True, if_game_ended)

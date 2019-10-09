@@ -1,0 +1,7 @@
+1. To run test_environment unit tests:
+    python -m unittest test.test_environment
+
+2. To run all unit tests: (python will search for tests in the project)
+    python -m unittest
+
+-m -> run it as a script
