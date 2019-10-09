@@ -46,8 +46,48 @@ class Environment:
         #check columns
         if_column_win = self._game_ended_column_check()
 
-
         #check diagonals
+        if_diagonal_win = self._game_ended_diagonal_win()
+
+    def _game_ended_diagonal_check(self):
+        for player_number in (1, 2):
+            #left to right
+            for row in range(self.rows - 2):
+                in_a_diagonal_count = 0
+                for column in range(self.columns - 2):
+
+                    if self.board[row, column] == player_number:
+                        in_a_diagonal_count += 1
+                    if self.board[row + 1, column + 1] == player_number:
+                        in_a_diagonal_count += 1
+                    if self.board[row + 2, column + 2] == player_number:
+                        in_a_diagonal_count += 1
+
+                    if in_a_diagonal_count == 3:
+                        self.winner = player_number
+                        self.ended = True
+
+                    in_a_diagonal_count = 0
+
+            # right to left
+            for row in range(self.rows - 2):
+                in_a_diagonal_count = 0
+                for column in range(2, self.columns):
+
+                    if self.board[row, column] == player_number:
+                        in_a_diagonal_count += 1
+                    if self.board[row + 1, column - 1] == player_number:
+                        in_a_diagonal_count += 1
+                    if self.board[row + 2, column - 2] == player_number:
+                        in_a_diagonal_count += 1
+
+                    if in_a_diagonal_count == 3:
+                        self.winner = player_number
+                        self.ended = True
+
+                    in_a_diagonal_count = 0
+
+        return self.ended
 
     def _game_ended_row_check(self):
         for player_number in (1, 2):

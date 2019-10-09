@@ -118,3 +118,92 @@ class TestEnvironment(unittest.TestCase):
         if_game_ended = env._game_ended_column_check()
 
         self.assertEqual(True, if_game_ended)
+
+    def test__game_ended_diagonal_check_when_not_ended(self):
+        env = Environment(3, 3)
+        env.set_o(0, 0)
+        env.set_o(1, 1)
+        env.set_o(2, 1)
+        env.print_array()
+
+        if_game_ended = env._game_ended_diagonal_check()
+
+        self.assertEqual(False, if_game_ended)
+
+    def test__game_ended_diagonal_check_when_ended_left_to_right(self):
+        env = Environment(3, 3)
+        env.set_x(0, 0)
+        env.set_x(1, 1)
+        env.set_x(2, 2)
+        env.print_array()
+
+        if_game_ended = env._game_ended_diagonal_check()
+
+        self.assertEqual(True, if_game_ended)
+
+    def test__game_ended_diagonal_check_when_ended_left_to_right_on_4x4_board(self):
+        env = Environment(4, 4)
+        env.set_x(1, 1)
+        env.set_x(2, 2)
+        env.set_x(3, 3)
+        env.print_array()
+
+        if_game_ended = env._game_ended_diagonal_check()
+
+        self.assertEqual(True, if_game_ended)
+
+    def test__game_ended_diagonal_check_when_ended_right_to_left_on_4x4_board(self):
+        env = Environment(4, 4)
+        env.set_o(1, 3)
+        env.set_o(2, 2)
+        env.set_o(3, 1)
+        env.print_array()
+
+        if_game_ended = env._game_ended_diagonal_check()
+
+        self.assertEqual(True, if_game_ended)
+
+    def test2__game_ended_diagonal_check_when_ended_right_to_left_on_4x4_board(self):
+        env = Environment(4, 4)
+        env.set_o(1, 2)
+        env.set_o(2, 1)
+        env.set_o(3, 0)
+        env.print_array()
+
+        if_game_ended = env._game_ended_diagonal_check()
+
+        self.assertEqual(True, if_game_ended)
+
+    def test__game_ended_diagonal_check_when_not_ended_on_4x4_board(self):
+        env = Environment(4, 4)
+        env.board.fill(1)
+        env.set_o(2, 1)
+        env.set_o(2, 2)
+        env.set_o(2, 3)
+        env.print_array()
+
+        if_game_ended = env._game_ended_diagonal_check()
+
+        self.assertEqual(False, if_game_ended)
+
+    def test__game_ended_diagonal_check_on_12x12_board(self):
+        env = Environment(12, 12)
+        env.set_o(9, 2)
+        env.set_o(10, 1)
+        env.set_o(11, 0)
+        env.print_array()
+
+        if_game_ended = env._game_ended_diagonal_check()
+
+        self.assertEqual(True, if_game_ended)
+
+    def test2__game_ended_diagonal_check_on_12x12_board(self):
+        env = Environment(12, 12)
+        env.set_o(4, 4)
+        env.set_o(5, 5)
+        env.set_o(6, 6)
+        env.print_array()
+
+        if_game_ended = env._game_ended_diagonal_check()
+
+        self.assertEqual(True, if_game_ended)
