@@ -86,3 +86,35 @@ class TestEnvironment(unittest.TestCase):
 
         env.print_array()
         self.assertEqual(True, if_game_ended)
+
+    def test__game_ended_column_check_when_game_not_ended(self):
+        env = Environment(3, 3)
+        env.set_o(0, 0)
+        env.set_o(1, 0)
+        env.set_x(2, 0)
+
+        if_game_ended = env._game_ended_column_check()
+
+        env.print_array()
+        self.assertEqual(False, if_game_ended)
+
+    def test__game_ended_column_check_when_game_ended(self):
+        env = Environment(3, 3)
+        env.set_x(0, 0)
+        env.set_x(1, 0)
+        env.set_x(2, 0)
+
+        if_game_ended = env._game_ended_column_check()
+
+        self.assertEqual(True, if_game_ended)
+
+    def test__game_ended_column_check_when_game_ended_4x3_board(self):
+        env = Environment(4, 3)
+        env.set_o(1, 1)
+        env.set_o(2, 1)
+        env.set_o(3, 1)
+
+        env.print_array()
+        if_game_ended = env._game_ended_column_check()
+
+        self.assertEqual(True, if_game_ended)

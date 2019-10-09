@@ -44,6 +44,8 @@ class Environment:
         if_row_win = self._game_ended_row_check()
 
         #check columns
+        if_column_win = self._game_ended_column_check()
+
 
         #check diagonals
 
@@ -61,6 +63,19 @@ class Environment:
 
         return self.ended
 
+    def _game_ended_column_check(self):
+        for player_number in (1, 2):
+            for column in range(self.columns):
+                in_a_column_count = 0
+                for row in range(self.rows):
+                    if self.board[row, column] == player_number:
+                        in_a_column_count += 1
+
+                    if in_a_column_count == 3:
+                        self.winner = player_number
+                        self.ended = True
+
+        return self.ended
 
     def is_draw(self):
         pass
