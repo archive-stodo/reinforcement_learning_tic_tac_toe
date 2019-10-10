@@ -207,3 +207,54 @@ class TestEnvironment(unittest.TestCase):
         if_game_ended = env._game_ended_diagonal_check()
 
         self.assertEqual(True, if_game_ended)
+
+    def test_game_ended_when_not_ended(self):
+        env = Environment(2, 2)
+        env.print_array()
+
+        game_ended = env.check_game_ended()
+
+        self.assertEqual(False, game_ended)
+
+    def test_game_ended_when_x_has_won_but_no_force_recalculate(self):
+        env = Environment(3, 3)
+        env.set_x(0, 0)
+        env.set_x(1, 0)
+        env.set_x(2, 0)
+        env.print_array()
+
+        game_ended = env.check_game_ended()
+
+        self.assertEqual(False, game_ended)
+
+    def test_game_ended_when_x_has_won_(self):
+        env = Environment(3, 3)
+        env.set_x(0, 0)
+        env.set_x(1, 0)
+        env.set_x(2, 0)
+        env.print_array()
+
+        game_ended = env.check_game_ended(force_recalculate=True)
+
+        self.assertEqual(True, game_ended)
+
+    def test__draw_check_when_no_draw(self):
+        env = Environment(3, 3)
+        env.set_x(0, 0)
+        env.set_x(1, 0)
+        env.set_o(2, 0)
+        env.print_array()
+
+        env._draw_check()
+
+        self.assertEqual(False, env.draw)
+
+    def test__draw_check_when_draw(self):
+        env = Environment(3, 3)
+        env.board.fill(1)
+        env.set_o(1, 1)
+        env.print_array()
+
+        env._draw_check()
+
+        self.assertEqual(True, env.draw)

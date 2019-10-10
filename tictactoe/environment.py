@@ -7,7 +7,8 @@ class Environment:
         self.columns = columns
         self.board = np.zeros((rows, columns), int)
         self.winner = None
-        self.ended = False
+        self.game_ended = False
+        self.draw = False
         self.num_states = 3**(rows*columns)
 
     def reward(self, player_symbol):
@@ -38,16 +39,26 @@ class Environment:
 
     def check_game_ended(self, force_recalculate=False):
         if not force_recalculate:
-            return self.ended
+            return self.game_ended
 
-        #check rows
-        if_row_win = self._game_ended_row_check()
+        # assume that:
+        self.game_ended = False
+        self.draw = False
+        self.winner = None
 
-        #check columns
-        if_column_win = self._game_ended_column_check()
+        # set fields / check if assumptions were right
+        self._game_ended_row_check()
+        self._game_ended_column_check()
+        self._game_ended_diagonal_check()
+        self._draw_check()
 
-        #check diagonals
-        if_diagonal_win = self._game_ended_diagonal_win()
+        return self.game_ended
+
+    def _draw_check(self):
+        if np.all(self.board != 0):
+            self.draw = True
+            self.game_ended = True
+            self.winner = None
 
     def _game_ended_diagonal_check(self):
         for player_number in (1, 2):
@@ -65,7 +76,7 @@ class Environment:
 
                     if in_a_diagonal_count == 3:
                         self.winner = player_number
-                        self.ended = True
+                        self.game_ended = True
 
                     in_a_diagonal_count = 0
 
@@ -83,11 +94,11 @@ class Environment:
 
                     if in_a_diagonal_count == 3:
                         self.winner = player_number
-                        self.ended = True
+                        self.game_ended = True
 
                     in_a_diagonal_count = 0
 
-        return self.ended
+        return self.game_ended
 
     def _game_ended_row_check(self):
         for player_number in (1, 2):
@@ -99,9 +110,9 @@ class Environment:
 
                     if in_a_row_count == 3:
                         self.winner = player_number
-                        self.ended = True
+                        self.game_ended = True
 
-        return self.ended
+        return self.game_ended
 
     def _game_ended_column_check(self):
         for player_number in (1, 2):
@@ -113,12 +124,12 @@ class Environment:
 
                     if in_a_column_count == 3:
                         self.winner = player_number
-                        self.ended = True
+                        self.game_ended = True
 
-        return self.ended
+        return self.game_ended
 
     def is_draw(self):
-        pass
+        return np.all(self.board != 0)
 
     def set_x(self, row, column):
         self.board[row, column] = 1
