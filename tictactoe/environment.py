@@ -12,7 +12,7 @@ class Environment:
         self.num_states = 3**(rows*columns)
 
     def reward(self, player_symbol):
-        if not self.is_game_over():
+        if not self.check_game_ended():
             return 0
 
         return 1 if self.winner == player_symbol else 0
@@ -35,29 +35,29 @@ class Environment:
         pass
 
     def get_all_possible_states(self, board, player_turn, visited_state_numbers):
-        results = []
-        results.append((self.get_state_number(board), self.game_ended, self.winner))
+        # initial state
+        states = [(self.get_state_number(board), self.game_ended, self.winner)]
 
         possible_moves = []
         for i in range(self.rows):
             for j in range(self.columns):
-                if board[i, j] not in (1, 2):
-                    board_copy = board.copy()
-                    board_copy[i, j] = player_turn
-                    next_move_state_number = self.get_state_number(board_copy)
+                if board[i, j] not in (1, 2) and not self.check_game_ended(force_recalculate=True):
+                    previous_state = self.board[i, j]
+                    self.board[i, j] = player_turn
+                    next_move_state_number = self.get_state_number(self.board)
 
                     if next_move_state_number not in visited_state_numbers:
                         visited_state_numbers.append(next_move_state_number)
                         possible_moves.append((i, j))
+
+                    self.board[i, j] = previous_state
 
         for move in possible_moves:
             previous_state = self.board[move]
             self.board[move] = player_turn
             self.check_game_ended(force_recalculate=True)
 
-            results.append((self.get_state_number(self.board), self.game_ended, self.winner))
-
-            self.board[move] = previous_state
+            states.append((self.get_state_number(self.board), self.game_ended, self.winner))
 
             if player_turn == 1:
                 player_turn = 2
@@ -66,9 +66,12 @@ class Environment:
 
             board_copy = board.copy()
             board_copy[move] = player_turn
-            results += self.get_all_possible_states(board_copy, player_turn, visited_state_numbers)
 
-        return results
+            self.board[move] = previous_state
+
+            states += self.get_all_possible_states(board_copy, player_turn, visited_state_numbers)
+
+        return states
 
     def initialV_x(env, state_winner_triples):
         pass
@@ -176,10 +179,29 @@ class Environment:
     def set_o(self, row, column):
         self.board[row, column] = 2
 
-    def print_array(self):
-        for row in range(len(self.board)):
-            for column in range(len(self.board[0])):
-                value = self.board[row][column]
+    def get_board_from_state_number(self, state_number, print_board=False):
+        board = np.zeros((self.rows, self.columns), int)
+        for row in range(self.rows, 0, -1):
+            for column in range(self.columns, 0, -1):
+                cell_multiplier = 3 ** ((row - 1) * self.columns + column - 1)
+                if 2 * cell_multiplier <= state_number:
+                    board[row - 1, column - 1] = 2
+                    state_number = state_number - 2 * cell_multiplier
+                elif cell_multiplier <= state_number:
+                    board[row - 1, column - 1] = 1
+                    state_number = state_number - cell_multiplier
+                else:
+                    board[row - 1, column - 1] = 0
+
+        if print_board:
+            self.print_array(board)
+
+        return board
+
+    def print_array(self, board):
+        for row in range(self.rows):
+            for column in range(self.columns):
+                value = board[row][column]
                 if value == 0:
                     print('.', end=" ")
                 elif value == 1:

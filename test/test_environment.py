@@ -52,7 +52,7 @@ class TestEnvironment(unittest.TestCase):
 
         if_game_ended = env._game_ended_row_check()
 
-        env.print_array()
+        env.print_array(env.board)
         self.assertEqual(False, if_game_ended)
 
     def test__game_ended_row_check_when_game_not_ended_board_empty(self):
@@ -60,7 +60,7 @@ class TestEnvironment(unittest.TestCase):
 
         if_game_ended = env._game_ended_row_check()
 
-        env.print_array()
+        env.print_array(env.board)
         self.assertEqual(False, if_game_ended)
 
     def test__game_ended_row_check_when_game_ended(self):
@@ -72,7 +72,7 @@ class TestEnvironment(unittest.TestCase):
 
         if_game_ended = env._game_ended_row_check()
 
-        env.print_array()
+        env.print_array(env.board)
         self.assertEqual(True, if_game_ended)
 
     def test__game_ended_row_check_when_game_ended_on4x4_board(self):
@@ -84,7 +84,7 @@ class TestEnvironment(unittest.TestCase):
 
         if_game_ended = env._game_ended_row_check()
 
-        env.print_array()
+        env.print_array(env.board)
         self.assertEqual(True, if_game_ended)
 
     def test__game_ended_column_check_when_game_not_ended(self):
@@ -95,7 +95,7 @@ class TestEnvironment(unittest.TestCase):
 
         if_game_ended = env._game_ended_column_check()
 
-        env.print_array()
+        env.print_array(env.board)
         self.assertEqual(False, if_game_ended)
 
     def test__game_ended_column_check_when_game_ended(self):
@@ -114,7 +114,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_o(2, 1)
         env.set_o(3, 1)
 
-        env.print_array()
+        env.print_array(env.board)
         if_game_ended = env._game_ended_column_check()
 
         self.assertEqual(True, if_game_ended)
@@ -124,7 +124,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_o(0, 0)
         env.set_o(1, 1)
         env.set_o(2, 1)
-        env.print_array()
+        env.print_array(env.board)
 
         if_game_ended = env._game_ended_diagonal_check()
 
@@ -135,7 +135,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_x(0, 0)
         env.set_x(1, 1)
         env.set_x(2, 2)
-        env.print_array()
+        env.print_array(env.board)
 
         if_game_ended = env._game_ended_diagonal_check()
 
@@ -146,7 +146,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_x(1, 1)
         env.set_x(2, 2)
         env.set_x(3, 3)
-        env.print_array()
+        env.print_array(env.board)
 
         if_game_ended = env._game_ended_diagonal_check()
 
@@ -157,7 +157,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_o(1, 3)
         env.set_o(2, 2)
         env.set_o(3, 1)
-        env.print_array()
+        env.print_array(env.board)
 
         if_game_ended = env._game_ended_diagonal_check()
 
@@ -168,7 +168,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_o(1, 2)
         env.set_o(2, 1)
         env.set_o(3, 0)
-        env.print_array()
+        env.print_array(env.board)
 
         if_game_ended = env._game_ended_diagonal_check()
 
@@ -180,7 +180,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_o(2, 1)
         env.set_o(2, 2)
         env.set_o(2, 3)
-        env.print_array()
+        env.print_array(env.board)
 
         if_game_ended = env._game_ended_diagonal_check()
 
@@ -191,7 +191,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_o(9, 2)
         env.set_o(10, 1)
         env.set_o(11, 0)
-        env.print_array()
+        env.print_array(env.board)
 
         if_game_ended = env._game_ended_diagonal_check()
 
@@ -202,7 +202,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_o(4, 4)
         env.set_o(5, 5)
         env.set_o(6, 6)
-        env.print_array()
+        env.print_array(env.board)
 
         if_game_ended = env._game_ended_diagonal_check()
 
@@ -210,7 +210,7 @@ class TestEnvironment(unittest.TestCase):
 
     def test_game_ended_when_not_ended(self):
         env = Environment(2, 2)
-        env.print_array()
+        env.print_array(env.board)
 
         game_ended = env.check_game_ended()
 
@@ -221,7 +221,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_x(0, 0)
         env.set_x(1, 0)
         env.set_x(2, 0)
-        env.print_array()
+        env.print_array(env.board)
 
         game_ended = env.check_game_ended()
 
@@ -232,7 +232,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_x(0, 0)
         env.set_x(1, 0)
         env.set_x(2, 0)
-        env.print_array()
+        env.print_array(env.board)
 
         game_ended = env.check_game_ended(force_recalculate=True)
 
@@ -243,7 +243,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_x(0, 0)
         env.set_x(1, 0)
         env.set_o(2, 0)
-        env.print_array()
+        env.print_array(env.board)
 
         env._draw_check()
 
@@ -253,7 +253,7 @@ class TestEnvironment(unittest.TestCase):
         env = Environment(3, 3)
         env.board.fill(1)
         env.set_o(1, 1)
-        env.print_array()
+        env.print_array(env.board)
 
         env._draw_check()
 
@@ -265,3 +265,36 @@ class TestEnvironment(unittest.TestCase):
         results = env.get_all_possible_states(env.board, 1, [])
 
         self.assertTrue(len(results) != 0)
+
+    def test_get_board_from_state_number_23(self):
+        # given
+        env = Environment(2, 2)
+        state_number = 23
+
+        # when - conversion from state number to board and back to number
+        board_from_state = env.get_board_from_state_number(state_number, True)
+        state_number_from_board = env.get_state_number(board_from_state)
+
+        # then
+        self.assertEqual(state_number_from_board, state_number)
+
+    def test_get_board_from_state_number_80(self):
+        # given
+        env = Environment(2, 2)
+        state_number = 80
+
+        # when - conversion from state number to board and back to number
+        board_from_state = env.get_board_from_state_number(state_number, True)
+        state_number_from_board = env.get_state_number(board_from_state)
+
+        # then
+        self.assertEqual(state_number_from_board, state_number)
+
+
+
+
+
+
+
+
+
