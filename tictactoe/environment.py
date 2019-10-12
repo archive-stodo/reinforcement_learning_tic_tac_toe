@@ -20,16 +20,55 @@ class Environment:
     def is_empty(self, i, j):
         return self.board[i, j] == 0
 
-    def get_state_number(self):
+    def get_state_number(self, board):
         power = 0
         state_number = 0
-        for row in range(len(self.board)):
-            for column in range(len(self.board[0])):
-                current_field_value = self.board[row][column] # 0 1 2
+        for row in range(len(board)):
+            for column in range(len(board[0])):
+                current_field_value = board[row][column] # 0 1 2
                 state_number += 3**power * current_field_value
                 power += 1
 
         return state_number
+
+    def get_state_number_winner_ended_triple(env, i=0, j=0):
+        pass
+
+    def get_all_possible_states(self, board, player_turn, visited_state_numbers):
+        results = []
+        results.append((self.get_state_number(board), self.game_ended, self.winner))
+
+        possible_moves = []
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if board[i, j] not in (1, 2):
+                    board_copy = board.copy()
+                    board_copy[i, j] = player_turn
+                    next_move_state_number = self.get_state_number(board_copy)
+
+                    if next_move_state_number not in visited_state_numbers:
+                        visited_state_numbers.append(next_move_state_number)
+                        possible_moves.append((i, j))
+
+        for move in possible_moves:
+            previous_state = self.board[move]
+            self.board[move] = player_turn
+            self.check_game_ended(force_recalculate=True)
+
+            results.append((self.get_state_number(self.board), self.game_ended, self.winner))
+
+            self.board[move] = previous_state
+
+            if player_turn == 1:
+                player_turn = 2
+            else:
+                player_turn = 1
+
+            board_copy = board.copy()
+            board_copy[move] = player_turn
+            results += self.get_all_possible_states(board_copy, player_turn, visited_state_numbers)
+
+        return results
 
     def initialV_x(env, state_winner_triples):
         pass

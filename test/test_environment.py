@@ -258,3 +258,10 @@ class TestEnvironment(unittest.TestCase):
         env._draw_check()
 
         self.assertEqual(True, env.draw)
+
+    def test_get(self):
+        env = Environment(2, 2)
+
+        results = env.get_all_possible_states(env.board, 1, [])
+
+        self.assertTrue(len(results) != 0)
