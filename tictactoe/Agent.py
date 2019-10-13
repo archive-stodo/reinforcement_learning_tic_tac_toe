@@ -34,7 +34,7 @@ class Agent:
             possible_moves = []
             for i in range(env.rows):
                 for j in range(env.columns):
-                    if env[i, j] == 0:
+                    if env.board[i, j] == 0:
                         possible_moves.append((i, j))
 
             move_id = np.random.choice(len(possible_moves))
@@ -61,9 +61,9 @@ class Agent:
                 state_number = env.get_state_number(env.board)
                 tried_move_state_value = env.state_number_winner_ended_triple[state_number]
 
-                if tried_move_state_value > tried_move_state_max_value:
+                if tried_move_state_value[0] > tried_move_state_max_value:
                     tried_move_with_max_state_value = possible_move
-                    tried_move_state_max_value = tried_move_state_value
+                    tried_move_state_max_value = tried_move_state_value[0]
 
                 #redo board position
                 env.board[possible_move] = 0
@@ -71,11 +71,11 @@ class Agent:
             move = tried_move_with_max_state_value
 
         #do the move eventually
-        env.board[move] = [self.player_number]
-        env.print_array(env.board)
+        env.board[move] = self.player_number
+        # env.print_array(env.board)
 
-    def update_state_history(self, env):
-        self.state_history.append(env.get_state_number())
+    def update_state_history(self, state_number):
+        self.state_history.append(state_number)
 
     def update_state_values(self, env):
         # 1 - agent won | 0 - otherwise

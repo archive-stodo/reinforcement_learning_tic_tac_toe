@@ -63,7 +63,7 @@ def initialV_o(env, state_winner_ended_triples):
 
 
 def play_game(p1, p2, env, draw=False):
-    current_player = p1
+    current_player = None
 
     while not env.check_game_ended(force_recalculate=True):
         if current_player == p1:
@@ -72,16 +72,14 @@ def play_game(p1, p2, env, draw=False):
             current_player = p1
 
         if draw:
-            if draw == 1 and current_player == p1:
-                env.print_array(env.board)
-            if draw == 2 and current_player == p2:
-                env.print_array(env.board)
+            env.print_array(env.board)
+
 
         #current player makes a move
         current_player.take_action(env)
 
         # update state history
-        state = env.get_state_number()
+        state = env.get_state_number(env.board)
         p1.update_state_history(state)
         p2.update_state_history(state)
 
@@ -101,6 +99,7 @@ p2 = Agent(player_number=2) # player o
 # set initial state values for both players
 env = Environment(3, 3)
 state_winner_triples = get_state_number_winner_ended_triple(env, verbose_lvl=0)
+env.state_number_winner_ended_triple = state_winner_triples
 
 Vx = initialV_x(env, state_winner_triples)
 p1.set_state_values(Vx)
@@ -112,19 +111,22 @@ number_of_games_to_be_played = 10000
 for game_nr in range(number_of_games_to_be_played):
     if game_nr % 200 == 0:
         print(f'game number: {game_nr}')
+    env.clear_board()
     play_game(p1, p2, env)
 
 # play human vs. agent
 # do you think the agent learned to play the game well?
 human = Human()
 human.set_symbol(2)
-
+p1.eps = 0
+env.clear_board()
 while True:
     p1.verbose = True
-    play_game(p1, human, env, draw=True)
+    play_game(human, p1, env, draw=True)
     # I made the agent player 1 because I wanted to see if it would
     # select the center as its starting move. If you want the agent
     # to go second you can switch the human and AI.
     answer = input("Play again? [Y/n]: ")
+    env.clear_board()
     if answer and answer.lower()[0] == 'n':
       break

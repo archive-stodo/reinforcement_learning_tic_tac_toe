@@ -12,6 +12,12 @@ class Environment:
         self.num_states = 3**(rows*columns)
         self.state_number_winner_ended_triple = []
 
+    def clear_board(self):
+        self.board.fill(0)
+        self.winner = None
+        self.game_ended = False
+        self.draw = False
+
     def reward(self, player_symbol):
         if not self.check_game_ended():
             return 0
