@@ -31,9 +31,7 @@ class Environment:
 
         return state_number
 
-    def get_state_number_winner_ended_triple(env, i=0, j=0):
-        pass
-
+    #something's seriously wrong with this function
     def get_all_possible_states(self, board, player_turn, visited_state_numbers):
         # initial state
         states = [(self.get_state_number(board), self.game_ended, self.winner)]

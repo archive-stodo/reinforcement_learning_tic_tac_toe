@@ -1,5 +1,23 @@
 from tictactoe.environment import Environment
 
+# inefficient (calculation for impossible board positions) but works.
+def get_state_number_winner_ended_triple(env, verbose_lvl=2):
+    number_winner_ended = []
+    for state_number in range(env.num_states):
+        board = env.get_board_from_state_number(state_number, print_board=False)
+        env.board = board
+        env.check_game_ended(force_recalculate=True)
+        number_winner_ended.append((state_number, env.game_ended, env.winner))
+
+        if verbose_lvl == 1:
+            print(f"state {state_number + 1} out of {env.num_states}. {round((state_number + 1) * 100 / env.num_states, 1)} % done")
+        if verbose_lvl == 2:
+            env.print_array(board)
+            print(number_winner_ended[-1])
+
+    return number_winner_ended
+
+
 def play_game(p1, p2, env, draw=False):
     current_player = None
 
