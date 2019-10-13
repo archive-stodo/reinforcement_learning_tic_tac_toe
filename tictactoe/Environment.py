@@ -10,6 +10,7 @@ class Environment:
         self.game_ended = False
         self.draw = False
         self.num_states = 3**(rows*columns)
+        self.state_number_winner_ended_triple = []
 
     def reward(self, player_symbol):
         if not self.check_game_ended():

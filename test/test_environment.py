@@ -1,5 +1,5 @@
 import unittest
-from tictactoe.environment import Environment
+from tictactoe.Environment import Environment
 
 class TestEnvironment(unittest.TestCase):
 
@@ -289,12 +289,3 @@ class TestEnvironment(unittest.TestCase):
 
         # then
         self.assertEqual(state_number_from_board, state_number)
-
-
-
-
-
-
-
-
-
