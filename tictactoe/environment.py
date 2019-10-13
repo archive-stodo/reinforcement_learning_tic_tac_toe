@@ -71,12 +71,6 @@ class Environment:
 
         return states
 
-    def initialV_x(env, state_winner_triples):
-        pass
-
-    def initialV_o(env, state_winner_triples):
-        pass
-
     def check_game_ended(self, force_recalculate=False):
         if not force_recalculate:
             return self.game_ended

@@ -1,4 +1,5 @@
 from tictactoe.environment import Environment
+import numpy as np
 
 # inefficient (calculation for impossible board positions) but works.
 def get_state_number_winner_ended_triple(env, verbose_lvl=2):
@@ -17,6 +18,33 @@ def get_state_number_winner_ended_triple(env, verbose_lvl=2):
 
     return number_winner_ended
 
+def initialV_x(env, state_winner_ended_triples):
+    state_values = np.zeros(env.num_states)
+
+    for state, winner, ended in state_winner_ended_triples:
+        if ended:
+            if winner == 1:
+                state_value = 1
+            else:
+                state_value = 0.5
+        state_value = 0.5
+        state_values[state] = state_value
+
+    return state_values
+
+def initialV_o(env, state_winner_ended_triples):
+    state_values = np.zeros(env.num_states)
+
+    for state, winner, ended in state_winner_ended_triples:
+        if ended:
+            if winner == 0:
+                state_value = 1
+            else:
+                state_value = 0.5
+        state_value = 0.5
+        state_values[state] = state_value
+
+    return state_values
 
 def play_game(p1, p2, env, draw=False):
     current_player = None
