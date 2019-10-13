@@ -5,6 +5,8 @@ import numpy as np
 # inefficient (calculation for impossible board positions) but works.
 from tictactoe.Human import Human
 
+# inspired by:
+# https://github.com/lazyprogrammer/machine_learning_examples/blob/master/rl/tic_tac_toe.py
 
 def get_state_number_winner_ended_triple(env, verbose_lvl=2):
     number_winner_ended = []
@@ -34,6 +36,8 @@ def initialV_x(env, state_winner_ended_triples):
                 state_value = 1
             else:
                 state_value = 0.5
+            state_values[state] = state_value
+
         state_value = 0.5
         state_values[state] = state_value
 
@@ -49,6 +53,9 @@ def initialV_o(env, state_winner_ended_triples):
                 state_value = 1
             else:
                 state_value = 0.5
+
+            state_values[state] = state_value
+
         state_value = 0.5
         state_values[state] = state_value
 
@@ -118,6 +125,6 @@ while True:
     # I made the agent player 1 because I wanted to see if it would
     # select the center as its starting move. If you want the agent
     # to go second you can switch the human and AI.
-    # answer = input("Play again? [Y/n]: ")
-    # if answer and answer.lower()[0] == 'n':
-    #   break
+    answer = input("Play again? [Y/n]: ")
+    if answer and answer.lower()[0] == 'n':
+      break
