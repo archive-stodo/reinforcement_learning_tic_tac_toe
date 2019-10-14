@@ -5,6 +5,7 @@ import numpy as np
 # inefficient (calculation for impossible board positions) but works.
 from tictactoe.Human import Human
 
+
 # inspired by:
 # https://github.com/lazyprogrammer/machine_learning_examples/blob/master/rl/tic_tac_toe.py
 
@@ -17,7 +18,8 @@ def get_state_number_winner_ended_triple(env, verbose_lvl=2):
         number_winner_ended.append((state_number, env.game_ended, env.winner))
 
         if verbose_lvl == 1:
-            print(f"state {state_number + 1} out of {env.num_states}. {round((state_number + 1) * 100 / env.num_states, 1)} % done")
+            print(
+                f"state {state_number + 1} out of {env.num_states}. {round((state_number + 1) * 100 / env.num_states, 1)} % done")
         if verbose_lvl == 2:
             env.print_array(board)
             print(number_winner_ended[-1])
@@ -62,8 +64,13 @@ def initialV_o(env, state_winner_ended_triples):
     return state_values
 
 
-def play_game(p1, p2, env, draw=False):
+def play_game(p1, p2, env, draw=False, draw_state_values=False):
+    # choose player starting the game randomly
     current_player = None
+    if np.random.rand() < 0.5:
+        current_player = p1
+    else:
+        current_player = p2
 
     while not env.check_game_ended(force_recalculate=True):
         if current_player == p1:
@@ -73,15 +80,21 @@ def play_game(p1, p2, env, draw=False):
 
         if draw:
             env.print_array(env.board)
+            if draw_state_values and isinstance(current_player, Agent):
+                print('\n Computer possible move state values:')
+                print(current_player.get_possible_move_state_values_board(env))
+                print('\n -------------------------------------')
 
-
-        #current player makes a move
+        # current player makes a move
         current_player.take_action(env)
 
         # update state history
         state = env.get_state_number(env.board)
         p1.update_state_history(state)
         p2.update_state_history(state)
+
+    if env.winner == p1.player_number and isinstance(p1, Human) or env.winner == p2.player_number and isinstance(p2, Human):
+        print('Ghrrr! Watch your back human! Next time I will triumph! \n')
 
     if draw:
         env.print_array(env.board)
@@ -90,14 +103,15 @@ def play_game(p1, p2, env, draw=False):
     p1.update_state_values(env)
     p2.update_state_values(env)
 
-# ----------------------------------------------------
+    # finally
+    env.clear_board()
 
-# train the agent
-p1 = Agent(player_number=1) # player x
-p2 = Agent(player_number=2) # player o
+# ----------------------------------------------------
+env = Environment(3, 3)
+p1 = Agent(player_number=1)  # player x
+p2 = Agent(player_number=2)  # player o
 
 # set initial state values for both players
-env = Environment(3, 3)
 state_winner_triples = get_state_number_winner_ended_triple(env, verbose_lvl=0)
 env.state_number_winner_ended_triple = state_winner_triples
 
@@ -107,26 +121,26 @@ p1.set_state_values(Vx)
 Vo = initialV_o(env, state_winner_triples)
 p2.set_state_values(Vo)
 
-number_of_games_to_be_played = 10000
+number_of_games_to_be_played = 40
 for game_nr in range(number_of_games_to_be_played):
     if game_nr % 200 == 0:
         print(f'game number: {game_nr}')
-    env.clear_board()
-    play_game(p1, p2, env)
+    play_game(p1, p2, env, draw=False)
 
-# play human vs. agent
-# do you think the agent learned to play the game well?
+# Print initial state values for both trained computer-agents
+print('p2: \n', p2.get_possible_move_state_values_board(env))
+print('p1: \n', p1.get_possible_move_state_values_board(env))
+
 human = Human()
 human.set_symbol(2)
-p1.eps = 0
+
 env.clear_board()
 while True:
     p1.verbose = True
-    play_game(human, p1, env, draw=True)
+    play_game(human, p1, env, draw=True, draw_state_values=True)
     # I made the agent player 1 because I wanted to see if it would
     # select the center as its starting move. If you want the agent
     # to go second you can switch the human and AI.
-    answer = input("Play again? [Y/n]: ")
-    env.clear_board()
+    answer = input("Dare to challenge me you carbon-based life form? [y/n]: ")
     if answer and answer.lower()[0] == 'n':
-      break
+        break
