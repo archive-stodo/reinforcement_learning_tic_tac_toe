@@ -1,6 +1,7 @@
 from tictactoe.Agent import Agent
 from tictactoe.Environment import Environment
 import numpy as np
+import matplotlib.pyplot as plt
 
 # inefficient (calculation for impossible board positions) but works.
 from tictactoe.Human import Human
@@ -93,6 +94,23 @@ def play_game(p1, p2, env, draw=False, draw_state_values=False):
         p1.update_state_history(state)
         p2.update_state_history(state)
 
+    game_nr = len(p2.points)
+    if isinstance(p1, Agent):
+        if env.winner == p1.player_number:
+            p1.points.append((game_nr, p1.points[-1][1] + 1))
+        elif env.winner == p2.player_number:
+            p1.points.append((game_nr, p1.points[-1][1]))
+        else:
+            p1.points.append((game_nr, p1.points[-1][1] + 0.5))
+
+    if isinstance(p2, Agent):
+        if env.winner == p2.player_number:
+            p2.points.append((game_nr, p2.points[-1][1] + 1))
+        elif env.winner == p1.player_number:
+            p2.points.append((game_nr, p2.points[-1][1]))
+        else:
+            p2.points.append((game_nr, p2.points[game_nr - 1][1] + 0.5))
+
     if env.winner == p1.player_number and isinstance(p1, Human) or env.winner == p2.player_number and isinstance(p2, Human):
         print('Ghrrr! Watch your back human! Next time I will triumph! \n')
 
@@ -109,7 +127,12 @@ def play_game(p1, p2, env, draw=False, draw_state_values=False):
 # ----------------------------------------------------
 env = Environment(3, 3)
 p1 = Agent(player_number=1)  # player x
+p1.eps = 0.2
+p1.alpha = 0.2
+
 p2 = Agent(player_number=2)  # player o
+p2.eps = 0.2
+p2.alpha = 0.2
 
 # set initial state values for both players
 state_winner_triples = get_state_number_winner_ended_triple(env, verbose_lvl=0)
@@ -121,26 +144,34 @@ p1.set_state_values(Vx)
 Vo = initialV_o(env, state_winner_triples)
 p2.set_state_values(Vo)
 
-number_of_games_to_be_played = 40
+number_of_games_to_be_played = 25000
 for game_nr in range(number_of_games_to_be_played):
-    if game_nr % 200 == 0:
+    if game_nr % 100 == 0:
         print(f'game number: {game_nr}')
     play_game(p1, p2, env, draw=False)
 
+game_nr1, points1 = zip(*p1.points)
+game_nr2, points2 = zip(*p2.points)
+
+plt.plot(game_nr1, points1, label=f'p1. eps: {p1.eps}, alpha: {p1.alpha}')
+plt.plot(game_nr2, points2, label=f'p2. eps: {p2.eps}, alpha: {p2.alpha}')
+plt.legend()
+plt.xlabel('Game Number')
+plt.ylabel('Points')
+plt.show()
+
 # Print initial state values for both trained computer-agents
-print('p2: \n', p2.get_possible_move_state_values_board(env))
-print('p1: \n', p1.get_possible_move_state_values_board(env))
+# print('p2: \n', p2.get_possible_move_state_values_board(env))
+# print('p1: \n', p1.get_possible_move_state_values_board(env))
 
 human = Human()
 human.set_symbol(2)
-
-env.clear_board()
 while True:
+    # show if greedy action or exploration chosen?
     p1.verbose = True
+
     play_game(human, p1, env, draw=True, draw_state_values=True)
-    # I made the agent player 1 because I wanted to see if it would
-    # select the center as its starting move. If you want the agent
-    # to go second you can switch the human and AI.
+
     answer = input("Dare to challenge me you carbon-based life form? [y/n]: ")
     if answer and answer.lower()[0] == 'n':
         break

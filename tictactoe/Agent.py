@@ -10,6 +10,8 @@ class Agent:
         self.state_values = []
         self.player_number = player_number
 
+        self.points = [(0, 0)] # 1 for win, 0.5 for draw
+
     def reset_history(self):
         self.state_history = []
 
