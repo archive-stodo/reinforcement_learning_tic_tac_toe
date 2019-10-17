@@ -125,14 +125,15 @@ def play_game(p1, p2, env, draw=False, draw_state_values=False):
     env.clear_board()
 
 # ----------------------------------------------------
-env = Environment(3, 4)
+env = Environment(3, 3) # other sizes doesn't really make sense!
+
 p1 = Agent(player_number=1)  # player x
-p1.eps = 0.2
-p1.alpha = 0.2
+p1.eps = 0.25
+p1.alpha = 0.1
 
 p2 = Agent(player_number=2)  # player o
-p2.eps = 0.2
-p2.alpha = 0.2
+p2.eps = 0.3
+p2.alpha = 0.1
 
 # set initial state values for both players
 state_winner_triples = get_state_number_winner_ended_triple(env, verbose_lvl=1)
@@ -144,7 +145,7 @@ p1.set_state_values(Vx)
 Vo = initialV_o(env, state_winner_triples)
 p2.set_state_values(Vo)
 
-number_of_games_to_be_played = 2500
+number_of_games_to_be_played = 50000
 for game_nr in range(number_of_games_to_be_played):
     if game_nr % 100 == 0:
         print(f'game number: {game_nr}')
@@ -161,14 +162,16 @@ plt.ylabel('Points')
 plt.show()
 
 # Print initial state values for both trained computer-agents
-# print('p2: \n', p2.get_possible_move_state_values_board(env))
-# print('p1: \n', p1.get_possible_move_state_values_board(env))
+print('p2: \n', p2.get_possible_move_state_values_board(env))
+print('p1: \n', p1.get_possible_move_state_values_board(env))
 
 human = Human()
 human.set_symbol(2)
 while True:
     # show if greedy action or exploration chosen?
     p1.verbose = True
+
+    p1.eps=0 # don't explore!
 
     play_game(human, p1, env, draw=True, draw_state_values=True)
 

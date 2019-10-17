@@ -144,7 +144,6 @@ class Environment:
     def _game_ended_row_check(self):
         for player_number in (1, 2):
             for row in range(self.rows):
-                in_a_row_count = 0
                 for column in range(self.columns - 2):
                     if self.board[row, column] == player_number and self.board[row, column + 1] == player_number and self.board[row, column + 2] == player_number:
                         self.winner = player_number
