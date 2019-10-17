@@ -145,11 +145,8 @@ class Environment:
         for player_number in (1, 2):
             for row in range(self.rows):
                 in_a_row_count = 0
-                for column in range(self.columns):
-                    if self.board[row, column] == player_number:
-                        in_a_row_count += 1
-
-                    if in_a_row_count == 3:
+                for column in range(self.columns - 2):
+                    if self.board[row, column] == player_number and self.board[row, column + 1] == player_number and self.board[row, column + 2] == player_number:
                         self.winner = player_number
                         self.game_ended = True
 
@@ -158,12 +155,9 @@ class Environment:
     def _game_ended_column_check(self):
         for player_number in (1, 2):
             for column in range(self.columns):
-                in_a_column_count = 0
-                for row in range(self.rows):
-                    if self.board[row, column] == player_number:
-                        in_a_column_count += 1
 
-                    if in_a_column_count == 3:
+                for row in range(self.rows - 2):
+                    if self.board[row, column] == player_number and self.board[row + 1, column] == player_number and self.board[row + 2, column] == player_number:
                         self.winner = player_number
                         self.game_ended = True
 

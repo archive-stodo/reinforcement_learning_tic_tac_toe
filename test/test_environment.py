@@ -24,7 +24,7 @@ class TestEnvironment(unittest.TestCase):
         env.set_x(0, 1) # 3
         env.set_x(0, 2) # 9
         env.set_o(1, 1) # 3^4 * 2 = 162
-        state_number = env.get_state_number()
+        state_number = env.get_state_number(env.board)
 
         self.assertEqual(175, state_number)
 
@@ -32,7 +32,7 @@ class TestEnvironment(unittest.TestCase):
         env = Environment(3, 3)
         env.board.fill(2)
 
-        state_number = env.get_state_number()
+        state_number = env.get_state_number(env.board)
 
         self.assertEqual(3 ** 9 - 1, state_number)
 
@@ -40,7 +40,7 @@ class TestEnvironment(unittest.TestCase):
         env = Environment(4, 4)
         env.board.fill(2)
 
-        state_number = env.get_state_number()
+        state_number = env.get_state_number(env.board)
 
         self.assertEqual(3 ** 16 - 1, state_number)
 
@@ -87,6 +87,18 @@ class TestEnvironment(unittest.TestCase):
         env.print_array(env.board)
         self.assertEqual(True, if_game_ended)
 
+    def test__game_ended_row_check_when_game_not_ended_on4x4_board(self):
+        env = Environment(4, 4)
+
+        env.set_o(2, 0)
+        env.set_o(2, 2)
+        env.set_o(2, 3)
+
+        if_game_ended = env._game_ended_row_check()
+
+        env.print_array(env.board)
+        self.assertEqual(False, if_game_ended)
+
     def test__game_ended_column_check_when_game_not_ended(self):
         env = Environment(3, 3)
         env.set_o(0, 0)
@@ -118,6 +130,17 @@ class TestEnvironment(unittest.TestCase):
         if_game_ended = env._game_ended_column_check()
 
         self.assertEqual(True, if_game_ended)
+
+    def test__game_ended_column_check_when_game_not_ended_4x3_board(self):
+        env = Environment(4, 3)
+        env.set_o(0, 1)
+        env.set_o(2, 1)
+        env.set_o(3, 1)
+
+        env.print_array(env.board)
+        if_game_ended = env._game_ended_column_check()
+
+        self.assertEqual(False, if_game_ended)
 
     def test__game_ended_diagonal_check_when_not_ended(self):
         env = Environment(3, 3)
@@ -176,10 +199,9 @@ class TestEnvironment(unittest.TestCase):
 
     def test__game_ended_diagonal_check_when_not_ended_on_4x4_board(self):
         env = Environment(4, 4)
-        env.board.fill(1)
-        env.set_o(2, 1)
+        env.set_o(0, 0)
         env.set_o(2, 2)
-        env.set_o(2, 3)
+        env.set_o(3, 3)
         env.print_array(env.board)
 
         if_game_ended = env._game_ended_diagonal_check()

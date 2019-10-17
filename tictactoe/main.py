@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 # inefficient (calculation for impossible board positions) but works.
 from tictactoe.Human import Human
 
-
 # inspired by:
 # https://github.com/lazyprogrammer/machine_learning_examples/blob/master/rl/tic_tac_toe.py
 
@@ -19,11 +18,12 @@ def get_state_number_winner_ended_triple(env, verbose_lvl=2):
         number_winner_ended.append((state_number, env.game_ended, env.winner))
 
         if verbose_lvl == 1:
-            print(
-                f"state {state_number + 1} out of {env.num_states}. {round((state_number + 1) * 100 / env.num_states, 1)} % done")
+            if state_number % 500 == 0:
+                print(f"state {state_number + 1} out of {env.num_states}. {round((state_number + 1) * 100 / env.num_states, 1)} % done")
         if verbose_lvl == 2:
-            env.print_array(board)
-            print(number_winner_ended[-1])
+            if state_number % 500 == 0:
+                env.print_array(board)
+                print(number_winner_ended[-1])
 
     env.state_number_winner_ended_triple = number_winner_ended
 
@@ -125,7 +125,7 @@ def play_game(p1, p2, env, draw=False, draw_state_values=False):
     env.clear_board()
 
 # ----------------------------------------------------
-env = Environment(3, 3)
+env = Environment(3, 4)
 p1 = Agent(player_number=1)  # player x
 p1.eps = 0.2
 p1.alpha = 0.2
@@ -135,7 +135,7 @@ p2.eps = 0.2
 p2.alpha = 0.2
 
 # set initial state values for both players
-state_winner_triples = get_state_number_winner_ended_triple(env, verbose_lvl=0)
+state_winner_triples = get_state_number_winner_ended_triple(env, verbose_lvl=1)
 env.state_number_winner_ended_triple = state_winner_triples
 
 Vx = initialV_x(env, state_winner_triples)
@@ -144,7 +144,7 @@ p1.set_state_values(Vx)
 Vo = initialV_o(env, state_winner_triples)
 p2.set_state_values(Vo)
 
-number_of_games_to_be_played = 25000
+number_of_games_to_be_played = 2500
 for game_nr in range(number_of_games_to_be_played):
     if game_nr % 100 == 0:
         print(f'game number: {game_nr}')
